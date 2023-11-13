@@ -13,7 +13,7 @@ const postsRouter = require("./routers/posts");
 // istanza di express
 const app = express();
 // Configuraz. file statici
-app.use(express.static("public/imgs/posts"));
+app.use(express.static("public"));
 
 // Rotte
 app.get("/", homeController.index);

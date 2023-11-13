@@ -65,6 +65,9 @@ function index(req, res) {
 function show(req, res) {
   const post = findOrFail(req, res);
 
+  post.image_url = `http://localhost:${process.env.PORT}/imgs/posts/${post.image}`;
+  post.image_download_url = `http://localhost:${process.env.PORT}/imgs/posts/${post.slug}/download-img`;
+
   res.json(post);
 }
 
