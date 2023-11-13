@@ -63,12 +63,46 @@ function index(req, res) {
 
 // SHOW ----------------------------------------------
 function show(req, res) {
-  const post = findOrFail(req, res);
+  //   res.json(post);
+  res.format({
+    html: () => {
+      const post = findOrFail(req, res);
 
-  post.image_url = `http://localhost:${process.env.PORT}/imgs/posts/${post.image}`;
-  post.image_download_url = `http://localhost:${process.env.PORT}/imgs/posts/${post.slug}/download-img`;
+      post.image_url = `http://localhost:${
+        process.env.PORT || 3000
+      }/imgs/posts/${post.image}`;
 
-  res.json(post);
+      post.image_download_url = `http://localhost:${
+        process.env.PORT || 3000
+      }/posts/${post.slug}/download-img`;
+      let htmlContent = fs.readFileSync(
+        path.resolve(__dirname, "../index.html"),
+        "utf-8"
+      );
+
+      const showPost = `
+        <div class="container mx-auto">
+            <h1 class="text-3xl text-center">${post.title}</h1>
+            <img class="mx-auto my-4" src="/imgs/posts/${post.image}" alt="img">
+            <p>${post.content}</p>
+            <p class="text-sm py-4"><span class="text-xl font-bold mr-4">Tags:</span>${post.tags}</p>
+            <div class="text-center mt-8">
+                <button class="py-2 px-4 mr-8 bg-blue-500 rounded-md ">
+                    <a href="${post.image_url}">Visualizza immagine</a>
+                </button>
+                <button class="py-2 px-4 bg-blue-500 rounded-md ">
+                    <a href="${post.image_download_url}">Scarica immagine</a>
+                </button>
+            </div>
+        </div>
+      `;
+      htmlContent = htmlContent
+        .replace("@title", "Post")
+        .replace("@body", showPost);
+
+      res.type("html").send(htmlContent);
+    },
+  });
 }
 
 // CREATE ----------------------------------------------
@@ -99,14 +133,7 @@ function create(req, res) {
 function downloadImg(req, res) {
   const post = findOrFail(req, res);
 
-  const filePath = path.resolve(
-    __dirname,
-    "..",
-    "public",
-    "imgs",
-    "posts",
-    post.image
-  );
+  const filePath = `./public/imgs/posts/${post.image}`;
 
   res.download(filePath);
 }
