@@ -33,8 +33,8 @@ function index(req, res) {
         // Sostituisco i placeholder(@) del componente con i valori dei post
         listContent
           .replace("@title", post.title)
-          .replace("@content", post.content)
           .replace("@image", post.image)
+          .replace("@content", post.content)
           .replace("@tags", post.tags)
       );
 
@@ -58,6 +58,30 @@ function index(req, res) {
       res.status(406).send("Not acceptable");
     },
   });
+}
+
+function show(req, res) {
+  const post = findOrFail(req, res);
+}
+
+function create(req, res) {}
+
+function download(req, res) {
+  const post = findOrFail(req, res);
+}
+
+function findOrFail(req, res) {
+  // recupero l'id dalla richiesta
+  const postId = req.params.id;
+
+  // recupero la pizza dal menu
+  const post = menu.find((post) => post.id == postId);
+
+  // Nel caso in cui non sia stata trovata la pizza ritorno un 404
+  if (!post) {
+    res.status(404).send(`Post con id ${postId} non trovato`);
+    return; // interrompo l'esecuzione della funzione
+  }
 }
 
 module.exports = {
