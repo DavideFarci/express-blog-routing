@@ -3,6 +3,7 @@ const path = require("path");
 
 const posts = require("../db/posts.js");
 
+// INDEX ----------------------------------------------
 function index(req, res) {
   res.format({
     html: () => {
@@ -60,17 +61,51 @@ function index(req, res) {
   });
 }
 
+// SHOW ----------------------------------------------
 function show(req, res) {
   const post = findOrFail(req, res);
-  console.log(post);
 
   res.json(post);
 }
 
-function create(req, res) {}
+// CREATE ----------------------------------------------
+function create(req, res) {
+  res.format({
+    html: () => {
+      let htmlContent = fs.readFileSync(
+        path.resolve(__dirname, "../index.html"),
+        "utf-8"
+      );
 
+      htmlContent = htmlContent
+        .replace("@title", "Create Post")
+        .replace(
+          "@body",
+          `<h1 class="text-center text-5xl mt-24">Creazione nuovo post</h1>`
+        );
+
+      res.type("html").send(htmlContent);
+    },
+    default: () => {
+      res.status(406).send("Not acceptable");
+    },
+  });
+}
+
+// DOWNLOAD ----------------------------------------------
 function downloadImg(req, res) {
   const post = findOrFail(req, res);
+
+  const filePath = path.resolve(
+    __dirname,
+    "..",
+    "public",
+    "imgs",
+    "posts",
+    post.image
+  );
+
+  res.download(filePath);
 }
 
 function findOrFail(req, res) {
