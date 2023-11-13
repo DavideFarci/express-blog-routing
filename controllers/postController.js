@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const posts = require("../db/posts.json");
+const posts = require("../db/posts.js");
 
 function index(req, res) {
   res.format({
@@ -62,28 +62,36 @@ function index(req, res) {
 
 function show(req, res) {
   const post = findOrFail(req, res);
+  console.log(post);
+
+  res.json(post);
 }
 
 function create(req, res) {}
 
-function download(req, res) {
+function downloadImg(req, res) {
   const post = findOrFail(req, res);
 }
 
 function findOrFail(req, res) {
   // recupero l'id dalla richiesta
-  const postId = req.params.id;
+  const postSlug = req.params.slug;
 
   // recupero la pizza dal menu
-  const post = menu.find((post) => post.id == postId);
+  const post = posts.find((post) => post.slug == postSlug);
 
   // Nel caso in cui non sia stata trovata la pizza ritorno un 404
   if (!post) {
-    res.status(404).send(`Post con id ${postId} non trovato`);
+    res.status(404).send(`Post ${postSlug} non trovato`);
     return; // interrompo l'esecuzione della funzione
   }
+
+  return post;
 }
 
 module.exports = {
   index,
+  show,
+  create,
+  downloadImg,
 };

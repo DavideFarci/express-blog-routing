@@ -10,7 +10,9 @@ dotenv.config();
 const homeController = require("./controllers/homeController");
 const postsRouter = require("./routers/posts");
 
+// istanza di express
 const app = express();
+// Configuraz. file statici
 app.use(express.static("public/imgs/posts"));
 
 // Rotte
