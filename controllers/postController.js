@@ -33,9 +33,12 @@ function index(req, res) {
       const postsHtml = posts.map((post) =>
         // Sostituisco i placeholder(@) del componente con i valori dei post
         listContent
+          .replace(
+            "@show",
+            `http://localhost:${process.env.PORT || 3000}/posts/${post.slug}`
+          )
           .replace("@title", post.title)
           .replace("@image", post.image)
-          .replace("@content", post.content)
           .replace("@tags", post.tags)
       );
 
